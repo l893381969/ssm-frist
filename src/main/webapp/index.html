@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+输入手机号：<input type="text" name="tel"/>
+<input type="submit"  value="查询记录" onclick="showPlan()"/>
+
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript">
+
+	 function showPlan(){
+		 var tel = $("input[name='tel']").val();
+		 $.post("selectplan/"+tel,function(data){
+			console.log(data);
+		}); 
+	} 
+
+</script>
+</html>

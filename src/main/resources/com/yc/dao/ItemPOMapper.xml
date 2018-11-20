@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.yc.dao.ItemPOMapper">
+	<!-- public boolean insert(ItemPO itemPO); -->
+	<insert id="insert" parameterType="com.yc.po.ItemPO">
+		insert into items(iid,iname)values(#{iid},#{iname})
+	</insert>
+	
+	<!-- public boolean update(ItemPO itemPO); -->
+	<update id="update" parameterType="com.yc.po.ItemPO">
+		update items set iname = #{iname} where iid = #{iid}
+	</update>
+	
+	<!-- public List<UserPO> select(ItemPO itemPO); -->
+	<select id="select" resultType="com.yc.po.ItemPO">
+		select * from items
+		<where>
+			<if test="iid != null &amp;&amp; iid.trim() != &quot;&quot;">
+				and iid = #{iid}
+			</if>
+			<if test="iname != null &amp;&amp; iname.trim() != &quot;&quot;">		
+				and iname like CONCAT(CONCAT('%', #{iname}),'%')  
+			</if> 		
+		</where> 
+	</select>
+		
+</mapper> 
+  

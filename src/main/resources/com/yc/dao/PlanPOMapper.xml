@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yc.dao.PlanPOMapper">
+	<select id="selectPlan" resultType="com.yc.po.PlanPO">
+		select * from plan 
+		<where>
+			<if test="utel!='' and utel!=null ">
+				and utel = #{utel}
+			</if>
+			<if test="date!='' and date!=null ">
+				and date = #{date}
+			</if>
+			<if test="utel!='' and time!=null ">
+				and time = #{time}
+			</if>
+			<if test="uname!='' and uname!=null ">
+				and uname = #{uname}
+			</if>
+		</where>
+	</select>
+	
+	<!-- public boolean insert(List<PlanPO> planPOs); -->
+	<insert id="insert" parameterType="com.yc.po.PlanPO">
+		insert into plan(direction,college,department,classname,num,classroom,building,date,time,uname,utel,iid) values
+		<foreach collection="list" item="planPO" separator=",">
+			(#{planPO.direction},#{planPO.college},#{planPO.department},#{planPO.classname},#{planPO.num},#{planPO.classroom},#{planPO.building},#{planPO.date},#{planPO.time},#{planPO.uname},#{planPO.utel},#{planPO.iid})		
+		</foreach>
+	</insert>	
+	
+	<!-- public boolean update(PlanPO planPO); -->
+
+</mapper> 
+  
+ 

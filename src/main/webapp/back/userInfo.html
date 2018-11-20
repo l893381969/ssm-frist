@@ -1,0 +1,363 @@
+<style>
+	ul li{
+		margin-top:20px;
+	}
+</style>
+<div class="find_user">
+	<label>鐢ㄦ埛缂栧彿锛�</label>
+	<input type="text" name="u_id" style="width:100px;" />
+	<label>鐢ㄦ埛鍚嶇О锛�</label>
+	<input type="text" name="u_name" style="width:100px;" />
+	<label>鑱岃矗绫诲瀷锛�</label>
+		<input type="radio" name="u_type"  value="绠＄悊鍛�" />绠＄悊鍛�
+		<input type="radio" name="u_type"  value="鐩戣�冨憳" />鐩戣�冨憳
+	<a class="easyui-linkbutton find_user_button" href="javascript:void(0)">鏌ヨ</a>	
+</div> 
+<hr color="skyblue">
+<table id="show_user_info"></table>
+
+<div id="add" title="娣诲姞浜哄憳" style="display:none">
+<div class="easyui-panel" style="width:100%;height:100%;">
+<form id="addUser_form" method="post" >
+	<ul>
+		<li>
+			<label>鐢ㄦ埛鍚嶇О锛�</label>
+			<input class="easyui-validatebox" data-options="required:true" type="text" name="uname"/>
+			<span></span>
+		</li>	
+		<li>
+			<label>杈撳叆瀵嗙爜锛�</label>
+			<input class="easyui-validatebox" data-options="required:true" type="password" id="pwd" name="pwd">
+		</li>
+		<li>
+			<label>纭瀵嗙爜锛�</label>
+			<input id="rpwd" name="rpwd" type="password" class="easyui-validatebox"    
+   			 	   data-options="required:true" validType="equals['#pwd']" />  		
+		</li>
+		<li>
+			<label>鑱岃矗绫诲瀷锛�</label>
+			<select class="easyui-combobox" name="u_type" style="width: 100px;">
+				<option>绠＄悊鍛�</option>	
+				<option>鐩戣�冨憳</option>
+			</select>
+		</li>
+		<li>
+			<a class="easyui-linkbutton addUser" href="javascript:void(0)" style="margin-left:100px;width:50px;">娉ㄥ唽</a>		
+		</li>
+	</ul>
+</form>
+</div>
+</div>
+<div id="update"  title="淇敼瀵嗙爜"  style="display:none;">
+<div class="easyui-panel" style="width:100%;height:100%;">
+<form id="updateUser_form" method="post" >
+	<ul>
+		<li>
+			<label>鐢ㄦ埛缂栧彿锛�</label>
+			<input class="easyui-validatebox" data-options="required:true" type="text" name="u_id" readonly="readonly"/>		
+		</li>
+		<li>
+			<label>鐢ㄦ埛鍚嶇О锛�</label>
+			<input class="easyui-validatebox" data-options="required:true" type="text" name="u_name" readonly="readonly"/>
+			<span></span>
+		</li>	
+		<li>
+			<label>鍘熷瀵嗙爜锛�</label>
+			<input class="easyui-validatebox" data-options="required:true" type="password" id="oldpwd" name="oldpwd">
+		</li>
+		<li>
+			<label>鏂扮殑瀵嗙爜锛�</label>
+			<input id="newpwd" name="newpwd" type="password" class="easyui-validatebox"    
+   			 	   data-options="required:true" validType="equals['#oldpwd']" />  		
+		</li>
+		<li>
+			<label>鑱岃矗绫诲瀷锛�</label>
+			<select class="easyui-combobox" id="u_type" name="u_type" style="width: 100px;">
+				<option>绠＄悊鍛�</option>	
+				<option>鐩戣�冨憳</option>
+			</select>
+		</li>
+		<input type="hidden" name="sign" id="sign"/>
+		<li>
+			<a class="easyui-linkbutton updateUser" href="javascript:void(0)" style="margin-left:100px;width:50px;" id="one">淇敼</a>	
+			<a class="easyui-linkbutton deleteUser" href="javascript:void(0)" style="margin-left:100px;width:50px;" id="two">鍒犻櫎</a>			
+		</li>
+	</ul>
+</form>
+</div>
+</div>
+<script type="text/javascript">
+$(function(){	
+	/* 
+	$(".reg_submit").click(function(){
+		//alert("鍝堝搱");
+		$("#f1").form("submit",{
+			url:'login.html',
+			onSubmit:function(){
+				//琛ㄥ甫鎻愪氦鏃剁殑楠岃瘉淇℃伅
+				//鐢ㄦ埛鍚嶅繀椤绘槸4--銆�8浣�
+				var name = $("input[name='username']").val();
+				var reg = /^\w{4,8}$/;
+				if(name.match(reg)){
+					return true;
+				}else{
+					return false;
+				}		
+			},
+			success:function(data){
+				alert(data);
+			}
+		});//鍙戦�乤jax
+		//$("#f1").submit();//鎻愪氦琛ㄥ崟
+	}); */
+	
+ 	//鏉′欢鏌ヨ鑱屽憳淇℃伅
+	$(".find_user_button").click(function(){
+		//鑾峰彇鏌ヨ鏉′欢
+		var u_id = $(".find_user input[name='u_id']").val();
+		var u_name = $(".find_user input[name='u_name']").val();
+		var u_type = $(".find_user input[name='u_type']:checked").val();
+		//閲嶆柊浼犲弬鏁板姞杞借〃鏍间腑鐨勬暟鎹�
+		//reload閲嶈浇璁板綍锛岃窡'load'鏂规硶涓�鏍蜂絾鏄噸杞界殑鏄綋鍓嶉〉鐨勮褰曡�岄潪绗竴椤�
+		$("#show_user_info").datagrid("reload",{u_id:u_id,u_name:u_name,u_type:u_type});
+	});
+	
+	//鏄剧ず鐝骇淇℃伅   榛樿鍔犺浇鍦ㄨ鐝骇淇℃伅	
+	$("#show_user_info").datagrid({
+		url:"../users.action?op=findByTerm", //椤甸潰閮藉湪back鐩綍涓� servlet鍦�/鐩綍涓�
+		//璁剧疆涓簍rue灏嗗彧鍏佽閫夋嫨涓�琛�
+		singleSelect:true,
+		//璁剧疆涓簍rue灏嗕氦鏇挎樉绀鸿鑳屾櫙
+		striped:true,
+		//鍒嗛〉鎿嶄綔
+		pagination:true,
+		//褰撹缃垎椤靛睘鎬ф椂锛屽垵濮嬪寲姣忛〉璁板綍鏁�
+		pageSize:5,
+		//褰撹缃垎椤靛睘鎬ф椂锛屽垵濮嬪寲姣忛〉璁板綍鏁板垪琛�
+		pageList:[1,2,5,10],
+	 	//閫氳繃鏁扮粍瀹氫箟宸ュ叿鏍�
+		toolbar: [{
+			text:'娣诲姞',
+			iconCls: 'icon-add',
+			handler: function(){
+				//alert('娣诲姞鎸夐挳')
+			}
+		},'-',{
+			text:'缂栬緫',
+			iconCls: 'icon-edit',
+			handler: function(){						
+				//alert('缂栬緫鎸夐挳')
+			}
+		},'-',{
+			text:'鍒犻櫎',
+			iconCls: 'icon-remove',
+			handler: function(){
+				//alert('鍒犻櫎鎸夐挳')				
+			}
+		},'-',{
+			text:'甯姪',
+			iconCls: 'icon-help',
+			handler: function(){
+				//alert('甯姪鎸夐挳')
+				window.location.href = "email.html";
+			}
+		}],
+	columns:[[
+	  	      {field:'u_id',title:'缂栧彿',width:100},    
+	  	      {field:'u_account',title:'璐﹀彿',width:100},    
+	  	      {field:'u_pwd',title:'瀵嗙爜',width:100,align:'right'},    
+	  	      {field:'u_type',title:'绫诲瀷',width:100,align:'right'},         	          
+	  	  ]]
+	});
+
+	//楠岃瘉鑱屽憳鍚嶇О鏄惁琚敞鍐� 浠ュ強鏍煎紡
+ 	$("#addUser_form input[name='uname']").blur(function(){
+		//鑾峰彇鐩搁偦鐨剆pan鏍囩 骞惰祴鏍峰紡
+		$("#addUser_form input[name='uname'] ~ span").css("color","red");
+		//鑾峰彇娉ㄥ唽鐨勮亴鍛樿处鍙�
+		//var u_name = $("#find_user input[name='u_name']").val();
+		var u_name = $(this).val();
+		//鍒ゆ柇鏄惁杈撳叆璐︽埛鍚�
+		if(u_name == ''){
+			$("#addUser_form input[name='uname'] ~ span").html("璐︽埛鍚嶄笉鑳戒负绌�!");
+			return;
+		}
+	 	 //鍙戦�乤jax璇锋眰
+		$.post("../users.action",{op:'findByTerm',u_name:u_name},function(data){
+			//瑙ｆ瀽
+			//console.log(data);
+		 	 var obj = $.parseJSON(data);
+			//鍒ゆ柇閲嶅悕
+			if(obj.length == 0){
+				$("#addUser_form input[name='uname'] ~ span").html("璐︽埛鍚嶅彲鐢�!");
+			}else{
+				$("#addUser_form input[name='uname'] ~ span").html("璐︽埛鍚嶅凡鍗犵敤!");
+			}  	 
+		}); 
+	}); 
+			
+	//鎵╁睍equals() 楠岃瘉瀵嗙爜
+	// extend the 'equals' rule   
+ 	$.extend($.fn.validatebox.defaults.rules, {   
+	    equals: {   
+	        validator: function(value,param){   
+	            return value == $(param[0]).val();   
+	        },   
+	        message: '涓ゆ瀵嗙爜涓嶄竴鑷�'  
+	    }   
+	});    
+	
+ 	//鍛樺伐鍏ヨ亴
+	$("#addUser_form .addUser").click(function(){
+		//琛ㄥ崟鎻愪氦
+		$("#addUser_form").form("submit",{		
+			//璇锋眰鍦板潃
+			url:"../users.action",
+			//浼犻�掑弬鏁�
+			onSubmit:function(param){
+				//璁剧疆鍙傛暟
+				param.op="addUser";
+			},
+			success:function(data){
+				var ask;
+				var message;
+				if("success" == data){
+					ask = "娓╅Θ鎻愮ず";
+					message = "浜哄憳娣诲姞鎴愬姛锛侊紒锛�";			
+				}else{
+					ask = "閿欒鎻愮ず";
+					message = "浜哄憳娣诲姞澶辫触锛侊紒锛�";		
+				}
+				$.messager.show({//鍙充笅瑙掓彁绀烘
+					title:ask,	
+					msg:message,
+					timeout:5000,//瀛樺湪鏃堕暱5 S
+					showType:'slide'
+				});
+				//娓呯┖鏂囨湰妗�
+				$("input[name='uname']").val("");
+				$("input[name='pwd']").val("");
+				$("input[name='rpwd']").val("");
+			}	
+		});
+	}); 
+ 	
+	//淇敼鐢ㄦ埛淇℃伅
+	$("#updateUser_form .updateUser").click(function(){
+		$("#sign").val("one");		
+		showUpdate();
+	});
+	
+/* 	//鍒犻櫎鐢ㄦ埛淇℃伅
+	$("#updateUser_form .deleteUser").click(function(){
+		$("#sign").val("zero");	
+		showDelete();
+	}); */
+	
+	//淇敼鐨勬柟娉�
+	function showUpdate(){
+		//琛ㄥ崟鎻愪氦
+		$("#updateUser_form").form("submit",{		
+			//璇锋眰鍦板潃
+			url:"../users.action",
+			//浼犻�掑弬鏁�
+			onSubmit:function(param){
+				//璁剧疆鍙傛暟
+				param.op="update";			
+			},
+			success:function(data){
+				var ask;
+				var message;
+				if("success" == data){
+					ask = "娓╅Θ鎻愮ず";
+					message = "淇℃伅淇敼鎴愬姛锛侊紒锛�";			
+				}else{
+					ask = "閿欒鎻愮ず";
+					message = "淇℃伅淇敼澶辫触锛侊紒锛�";		
+				}
+				$.messager.show({//鍙充笅瑙掓彁绀烘
+					title:ask,	
+					msg:message,
+					timeout:5000,//瀛樺湪鏃堕暱5 S
+					showType:'slide'
+				});
+				//娓呯┖鏂囨湰妗�
+				$("input[name='u_name']").val("");
+				$("input[name='newpwd']").val("");
+				$("input[name='oldpwd']").val("");
+				$("#update").window.dispose();
+			}	
+		});
+	}
+	
+	
+	//淇℃伅淇敼
+	function update(){
+		var row = $("#show_user_info").datagrid("getSelected");
+		if(row){		
+			$("#update input[name='u_id']").val(row.u_id);
+			$("#update input[name='u_name']").val(row.u_account);
+			$("#update input[name='oldpwd']").val(row.u_pwd);
+			$("#update #u_type").combobox("select", row.u_type);	
+			//寮规鏄剧ず璇︽儏
+		 	$("#update").window({
+				title:"淇℃伅淇敼",
+				width:400,
+				height:350,
+				modal:true			
+			});		 		
+		}else{
+			$.messager.alert("鎻愮ず","璇烽�変腑瑕佺紪杈戠殑琛�");
+		}
+	}
+
+	//宸ュ叿绫昏Е鍙戜簨浠�
+	//娣诲姞鐢ㄦ埛
+	$(".icon-add").click(function(){
+		$("#add").window({
+			title:"娣诲姞鐢ㄦ埛",
+			width:400,
+			height:350,
+			modal:true			
+		});	
+	});
+	
+	//淇敼鐢ㄦ埛瀵嗙爜
+	$(".icon-edit").click(function(){
+		$(".deleteUser").css("display", "none");
+		$(".updateUser").css("display", "");
+		update();
+	});
+	
+	//鍒犻櫎鐢ㄦ埛
+	$(".icon-remove").click(function(){
+		$(".updateUser").css("display", "none");
+		$(".deleteUser").css("display", "");
+		update();
+	});
+
+});
+/*
+//绠＄悊鍛樻敞鍐�
+$(function(){
+	$("#reg .reg_submit").click(function(){
+		//鑾峰彇鐢ㄦ埛瀵嗙爜 绫诲瀷
+		var uname = $("input[name='uname']").val();
+		var pwd = $("input[name='pwd']").val();	
+		var option = $("select").val();
+		
+		//鍙戦�佽姹�
+		$.post("users.action",{op:"reg",uname:uname,pwd:pwd,type:option},function(data){
+			if('success' == data){
+				//鏀瑰彉鍦板潃鏍�
+				window.location.href = 'login.html';			
+			}else if('error' == data){
+				//$.messager.alert("閿欒鎻愮ず", '鐢ㄦ埛娉ㄥ唽澶辫触锛侊紒锛�');
+			}else{
+				alert(data);
+			}	
+		});			
+	});
+}); 
+ */
+</script>

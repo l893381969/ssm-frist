@@ -1,0 +1,159 @@
+<form id="find_plan_from" method="post" >	
+<div class="find_plan_check">		
+	<label>鐩戣�冩棩鏈�</label>	
+		<input class="easyui-validatebox easyui-datebox" data-options="required:true" type="text" name="date" style="width:150px;"/>	
+	<label>鑰冨嫟鏃堕棿娈�</label>
+	<select id="time" name="time" class="easyui-combobox" style="width:150px">
+		<option value=""></option>
+		<option value="09:00~11:00">09:00~11:00</option>
+		<option value="14:30~16:30">14:30~16:30</option>		
+	</select>
+	<label>鐩戣�冨憳</label>
+		<input id="uname" name="uname" style="width:100px;"/>
+	<label>鑱旂郴鏂瑰紡</label>
+		<input id="utel" name="utel" style="width:100px;"/>
+		<input type="submit" value="鎻愪氦"/>
+	<a class="easyui-linkbutton find_plan_button" href="javascript:void(0)">鏌ヨ</a>	
+</div> 
+</form>	
+<hr color="skyblue">
+<table id="show_plan">
+	<thead>
+		<tr>
+			<td width="150">璇︽儏缂栧彿</td>
+			<td width="150">璇剧▼鍚嶇О</td>
+			<td width="150">寮�璇鹃櫌绯�</td>
+			<td width="150">涓婅闄㈢郴</td>
+			<td width="150">鑰冭瘯鐝骇</td>
+			<td width="150">鍙傝�冧汉鏁�</td>
+			<td width="150">鑰冭瘯鍦扮偣</td>
+			<td width="150">鑰冭瘯妤兼爧</td>
+			<td width="150">鐩戣�冩棩鏈�</td>
+			<td width="150">鐩戣�冩椂闂�</td>
+			<td width="150">鐩戣�冧汉鍛�</td>
+			<td width="150">鎵嬫満鍙风爜</td>
+			<td width="150">鑰冭瘯闃舵</td>
+		</tr>
+	</thead>
+	<tbody>	
+	</tbody>
+</table>
+	
+<script type="text/javascript">
+$(function(){		
+	$('#find_plan_from').form({   
+	    url:"../findAll",  
+	    onSubmit: function(){   
+	        
+	    },   
+	    success:function(data){   
+	        //console.log(data);
+	        console.log(data[0]); 
+	        var str ="";
+	        for(var i = 0;i<data.lenth;i++){
+	        	str+='<tr><td width="150">'+data[i].pid+'</td><td width="150">璇剧▼鍚嶇О</td><td width="150">寮�璇鹃櫌绯�</td><td width="150">涓婅闄㈢郴</td>'+
+			'<td width="150">鑰冭瘯鐝骇</td><td width="150">鍙傝�冧汉鏁�</td><td width="150">鑰冭瘯鍦扮偣</td>'+
+			'<td width="150">鑰冭瘯妤兼爧</td><td width="150">鐩戣�冩棩鏈�</td>	<td width="150">鐩戣�冩椂闂�</td>	'+
+			'<td width="150">鐩戣�冧汉鍛�</td><td width="150">鎵嬫満鍙风爜</td><td width="150">鑰冭瘯闃舵</td><tr>'      	
+			 console.log(data[i].pid); 
+	        }
+	       
+	        $("#show_plan tbody").html(str);
+	    }   
+	});   
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+/*   	//鐐瑰嚮鏌ヨ鑾峰彇鑰冨嫟璁板綍琛ㄧ殑淇℃伅
+	$(".find_plan_button").click(function(){		
+		/* //鑾峰彇鏌ヨ鏉′欢
+		var date = $("#date").combobox("getValue");	
+		var check_time = $("time").combobox("getValue");
+		var uname
+		var stage_id = $(".find_class_check input[name='stage_id']:checked").val();	 
+		$.post("../findAll",function(data){
+			console.log(date);
+		})
+	});  
+ 	 */
+ 	
+	
+/* 	//榛樿鍔犺浇鎵�鏈夎�冨嫟璁″垝璇︽儏璁板綍琛�	
+	$("#show_check_info").datagrid({
+		url:"../findAll", //椤甸潰閮藉湪back鐩綍涓� servlet鍦�/鐩綍涓�		
+		//璁剧疆涓簍rue灏嗗彧鍏佽閫夋嫨涓�琛�
+		singleSelect:true,
+		//鍒嗛〉鎿嶄綔
+		pagination:true,
+		//褰撹缃垎椤靛睘鎬ф椂锛屽垵濮嬪寲姣忛〉璁板綍鏁�
+		pageSize:5,
+		//褰撹缃垎椤靛睘鎬ф椂锛屽垵濮嬪寲姣忛〉璁板綍鏁板垪琛�
+		pageList:[1,5,10,20],
+	 	//閫氳繃鏁扮粍瀹氫箟宸ュ叿鏍�
+		toolbar: [{
+			text:'娣诲姞',
+			iconCls: 'icon-add',
+			handler: function(){
+				//alert('娣诲姞鎸夐挳')
+			}
+		},'-',{
+			text:'缂栬緫',
+			iconCls: 'icon-edit',
+			handler: function(){						
+				//alert('缂栬緫鎸夐挳')
+			}
+		},'-',{
+			text:'鍒犻櫎',
+			iconCls: 'icon-remove',
+			handler: function(){
+				//alert('鍒犻櫎鎸夐挳')				
+			}
+		},'-',{
+			text:'甯姪',
+			iconCls: 'icon-help',
+			handler: function(){
+				//alert('甯姪鎸夐挳')
+				window.location.href = "email.html";
+			}
+		}],
+	columns:[[
+	  	      {field:'pid',title:'璇︽儏缂栧彿',width:100},    
+	  	      {field:'direction',title:'璇剧▼鍚嶇О',width:100,align:'center'},    
+	  	      {field:'college',title:'寮�璇鹃櫌绯�',width:100,align:'center'},    
+	  	      {field:'department',title:'涓婅闄㈢郴',width:100,align:'right'},    
+	  	      {field:'classname',title:'鑰冭瘯鐝骇',width:100,align:'center'},    
+	  	      {field:'num',title:'鍙傝�冧汉鏁�',width:100,align:'center'}, 
+	  	      {field:'classroom',title:'鑰冭瘯鍦扮偣',width:100,align:'center'}, 
+	  	      {field:'building',title:'鑰冭瘯妤兼爧',width:100,align:'center'}, 
+	  	      {field:'date',title:'鐩戣�冩棩鏈�',width:100,align:'center'}, 
+	  	      {field:'time',title:'鐩戣�冩椂闂�',width:100,align:'center'}, 
+	  	      {field:'uname',title:'鐩戣�冧汉鍛�',width:100,align:'center'}, 
+	  	      {field:'utel',title:'鑱旂郴鏂瑰紡',width:100,align:'center'}, 
+	  	      {field:'iid',title:'鑰冭瘯闃舵缂栧彿',width:100,align:'center'}, 
+	  	  ]],
+	onClickRow:function(){//鍗曞嚮鑾峰彇琛�
+		var row = $("#show_check_info").datagrid("getSelected");//鑾峰彇閫変腑琛岀殑鏁版嵁	
+		if(!row ){//闃叉琛屾暟閿欒
+			return;
+			}
+		$("#check_id").val(row.check_id);
+		$("#uid").val(row.u_id);
+		}		
+	}); */
+});
+</script>

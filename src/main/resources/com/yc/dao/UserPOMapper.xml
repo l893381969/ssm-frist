@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 头文件不一样 -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.yc.dao.UserPOMapper">
+	<!-- public boolean insert(List<UserPO> userPOs); -->
+	<insert id="insert" parameterType="com.yc.po.UserPO">
+		insert into users(uname,upwd,utype,utel)values
+		<foreach collection="list" item="userPO" separator=",">
+			 (#{userPO.uname},#{userPO.upwd},#{userPO.utype},#{userPO.utel})
+		</foreach>
+	</insert>
+	
+	<!-- public boolean update(UserPO userPO); -->
+	<update id="update" parameterType="com.yc.po.UserPO">
+		update users 
+		<set >
+			<if test="upwd != null &amp;&amp; upwd.trim() != &quot;&quot;">
+				upwd= #{upwd},
+			</if>
+			<if test="utel != null &amp;&amp; utel.trim() != &quot;&quot;">
+				 utel= #{utel},
+			</if>
+		</set>		
+		where uid = #{uid}
+	</update>
+
+	<!-- public boolean delete(UserPO userPO); -->
+	<delete id="delete" parameterType="com.yc.po.UserPO" >
+		delete from users where uid = #{uid}
+	</delete>
+	
+	<!-- public List<UserPO> select(UserPO userPO); -->
+	<select id="select" resultType="com.yc.po.UserPO">
+		select * from users
+		<where>
+			<if test="uid != null">
+				and uid = #{uid}
+			</if>
+			<if test="uname != null &amp;&amp; uname.trim() != &quot;&quot;">		
+				and uname like CONCAT(CONCAT('%', #{uname}),'%')  
+			</if> 
+			<if test="utype != null &amp;&amp; utype.trim() != &quot;&quot;">
+				and utype= #{utype}
+			</if>
+		</where> 
+	</select>
+	
+	<select id="login" resultType="com.yc.po.UserPO">
+		select * from users where uname = #{uname} and upwd = #{upwd}
+	</select>
+		
+</mapper> 
+  
+  
+  
+  

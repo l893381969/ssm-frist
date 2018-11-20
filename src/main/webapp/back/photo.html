@@ -1,0 +1,136 @@
+ <style>
+    .booth {
+        width:400px;
+        background:#ccc;
+        border: 10px solid #ddd;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="booth">
+<form id="photo" method="post">
+    <video id="video" width="400" height="300"></video>
+    <a class="easyui-linkbutton snap_button" href="javascript:void(0)">拍照</a>	
+    <a class="easyui-linkbutton send_button" href="javascript:void(0)">上传<a/>	
+    <canvas id='canvas' width='400' height='300'></canvas>
+   	<img id='img' src='' style="display:none">
+</form>    
+</div>
+<script type="text/javascript">
+//使用 getElementById()来访问 <video> 元素
+//来获取摄像头的视频流并显示在Video
+var video = document.getElementById('video');
+//通过ID获取该canvas
+var canvas = document.getElementById('canvas');
+//获取该canvas的2D绘图环境对象
+var context = canvas.getContext('2d');
+//拍摄
+var snap = document.getElementById('snap'),
+//照片
+ 	img = document.getElementById('img'),
+
+vendorUrl = window.URL || window.webkitURL;
+//navigator为浏览器对象
+//MediaStream：从设备获取数据流，比如说摄像头和麦克风
+//媒体对象MediaStream (别名getUserMedia)
+//第一步声明navigator.getMedia来调用浏览器不同的打开摄像头函数，目前仅有
+//getUserMedia、webkitGetUserMedia、mozGetUserMedia、msGetUserMedia四种方式分别对应
+//通用浏览器、Google浏览器、火狐浏览器和IE浏览器，浏览器会自动判断调用哪一个函数
+navigator.getMedia = navigator.getUserMedia ||
+    navagator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia;
+//启用摄像头    
+//也可指定视频分辨率, 代码如下: {video: {width: 640, height: 360}}
+//移动设备上, 可指定使用前置摄像头, 代码如下: {video: {facingMode: 'user'}}
+//或者使用后置摄像头, 代码如下: {video: {facingMode: {exact : 'environment'}}}
+navigator.getMedia({
+    video: true, //使用摄像头对象
+    audio: false  //不使用音频
+}, function(stream){
+    //console.log(stream);//stream为读取的视频流
+    video.src = vendorUrl.createObjectURL(stream);
+    video.play();
+}, function(error) {
+	/*
+	if(error.PERMISSION_DENIED){
+		console.log("用户拒绝了浏览器请求媒体的权限",error.code);
+	}else if(error.NOT_SUPPORTED_ERROR){
+		console.log("当前浏览器不支持拍照功能",error.code);
+	}else if(error.MANDATORY_UNSATISFIED_ERROR){
+		console.log("指定的媒体类型未接收到媒体流",error.code);
+	}else{
+		*/
+		alert("Video capture error: " + error.code);
+	    //console.log(error);
+});  
+
+//拍照
+$("#photo .snap_button").click(function(){
+     //绘制canvas图形
+     //将video对象内指定的区域捕捉绘制到画布上指定的区域，可进行不等大不等位的绘制。
+     canvas.getContext('2d').drawImage(video, 0, 0, 400, 300);
+     //把canvas图像转为img图片
+     //从Canvas获取图片数据的核心思路是用canvas的toDataURL将Canvas的数据转换为base64位编码的PNG图像，
+     //将Canvas的内容保存为图片借助toDataURL来实现） 方法返回一个包含图片展示的 data URI
+     //获取浏览器页面的画布对象  以下开始编 数据
+     // 类似于“data:image/png;base64,xxxxx”的格式
+     //data:image/png;    声明数据协议及类型名称
+	 //base64,            编码形式为base64
+	 //xxxxxxx……          base64编码结果
+     
+     //输出为png格式
+     var imgData = canvas.toDataURL("image/png");
+     img.src = imgData;     	
+ });
+ 
+//上传拍照的图片
+ $("#photo .send_button").click(function(){	 
+/* 	 //console.log(imgData);
+   	 //将图像转换为base64数据 
+   	 //方法一--分割	data:image/png;base64, 去除头文件
+     //var base64Data = imgData.split(",")[1];    
+   	 //方法二--截取22位之后的字符串作为图像数据
+   	 //var base64Data = imgData.substr(22); 
+   	 //方法三--替换 
+   	 //var base64Data = imgData.replace("data:image/png;base64,", "");
+   	 //console.log(base64Data ); 
+ */ 	
+ 	var imaDate = img.src;
+	var base64Data = imaDate.substr(22);
+	// 重点来了 ajax在传输过程中 加号会变成空格 base64里是有加号的 不幸掉进了这个坑
+	// 把+替换成编码 %2B是加号的编码
+	base64Data.replace(/\+/g, "%2B"); //对参数中的+号编码，防止丢失
+ 	$("#photo").form("submit",{	
+ 		url:"../myPhoto.action",
+	 	onSubmit:function(param){
+			param.op = "getPhoto";
+			param.base64Data = base64Data;
+		},
+		success:function(data){
+			var ask;
+			var message;
+			if("error" == data){
+				ask = "错误提示";
+				message = "图像采集失败！";
+			}else{
+				ask = "温馨提示";
+				message = "图像采集成功!";					
+			}
+			$.messager.show({//右下角提示框
+				title:ask,	
+				msg:message,
+				timeout:5000,//存在时长5 S
+				showType:'slide'
+			});
+		}		
+	 });
+ });
+			
+	
+	
+	
+	
+
+  	
+</script>
